@@ -1,7 +1,7 @@
 {
   "name": "dsh-usage-board",
-  "version": "0.1.0",
-  "description": "DSH Web overlay for SuperGrok / OpenCode / DeepSeek usage, with drop-in provider adapters.",
+  "version": "0.2.0",
+  "description": "DSH Web overlay that auto-detects model providers and subscription logins for usage meters.",
   "type": "module",
   "main": "lib/index.js",
   "files": ["lib", "docs", "cordis.patch.yml", "README.md", "LICENSE"],
