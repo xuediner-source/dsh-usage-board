@@ -1,0 +1,25 @@
+{
+  "name": "dsh-usage-board",
+  "version": "0.1.0",
+  "description": "DSH Web overlay for SuperGrok / OpenCode / DeepSeek usage, with drop-in provider adapters.",
+  "type": "module",
+  "main": "lib/index.js",
+  "files": ["lib", "docs", "cordis.patch.yml", "README.md", "LICENSE"],
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": { "platform": "web", "inject": ["slots"] }
+  },
+  "keywords": ["dsh", "grok", "supergrok", "opencode", "deepseek", "quota", "usage"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xuediner-source/dsh-usage-board.git"
+  },
+  "bugs": { "url": "https://github.com/xuediner-source/dsh-usage-board/issues" },
+  "homepage": "https://github.com/xuediner-source/dsh-usage-board#readme"
+}
