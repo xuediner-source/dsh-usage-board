@@ -2,8 +2,6 @@
 
 DeepSeek Harness Web 用量板：一块可拖动卡片，同时显示 **SuperGrok**、**OpenCode Go**、**DeepSeek** 额度，并留下扩展接口。
 
-原先的单 SuperGrok 仓库已升级为本插件，安装地址仍可用 `github:xuediner-source/dsh-supergrok-usage`。
-
 ## 内置供应商
 
 | id | 数据来源 | 凭证 |
@@ -17,10 +15,10 @@ DeepSeek Harness Web 用量板：一块可拖动卡片，同时显示 **SuperGro
 ## 安装
 
 ```sh
-dsh plugin --profile desktop add github:xuediner-source/dsh-supergrok-usage
+dsh plugin --profile desktop add github:xuediner-source/dsh-usage-board
 ```
 
-重启 DSH 后强制刷新。包名是 `dsh-usage-board`。
+重启 DSH 后强制刷新。
 
 ## 扩展更多模型
 
