@@ -2,7 +2,7 @@
 
 DeepSeek Harness Web 用量板：一块可拖动卡片，按当前 **模型提供方** 和 **订阅中心登录** 自动显示额度。
 
-未登录、未配置的提供方不会出现。Grok 订阅与旧 SuperGrok 同时存在时只显示订阅 Grok。
+未登录、未配置的提供方不会出现。
 
 ## 自动显示
 
@@ -20,7 +20,6 @@ DeepSeek Harness Web 用量板：一块可拖动卡片，按当前 **模型提�
 | Claude | 订阅中心登录 Claude | Anthropic OAuth usage |
 | OpenCode | 模型里有 OpenCode 提供方 | `OPENCODE_API_KEY` |
 | DeepSeek | 模型 id 含 deepseek，或本机有 `DEEPSEEK_API_KEY` | `DEEPSEEK_API_KEY` |
-| SuperGrok | 仅当存在 `grok-build` 且没有 Grok 订阅 | `GROK_BUILD_ACCESS_TOKEN` |
 
 令牌只在本机使用。浏览器只请求 `GET /api/usage-board`。
 
