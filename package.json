@@ -1,7 +1,7 @@
 {
   "name": "dsh-usage-board",
-  "version": "0.2.0",
-  "description": "DSH Web overlay that auto-detects model providers and subscription logins for usage meters.",
+  "version": "0.3.0",
+  "description": "DSH usage overlay: auto-detects model providers and subscription logins for usage meters.",
   "type": "module",
   "main": "lib/index.js",
   "files": ["lib", "docs", "cordis.patch.yml", "README.md", "LICENSE"],
@@ -10,11 +10,15 @@
     "./client": "./lib/client.js",
     "./package.json": "./package.json"
   },
+  "scripts": {
+    "check": "node --check lib/index.js && node --check lib/client.js && node --check lib/http.js && node --check lib/detect.js",
+    "test": "node test/run-all.mjs"
+  },
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },
     "client": { "platform": "web", "inject": ["slots"] }
   },
-  "keywords": ["dsh", "grok", "supergrok", "opencode", "deepseek", "quota", "usage"],
+  "keywords": ["dsh", "grok", "supergrok", "opencode", "deepseek", "quota", "usage", "gemini", "claude"],
   "license": "MIT",
   "repository": {
     "type": "git",
