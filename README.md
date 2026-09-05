@@ -6,7 +6,7 @@
 
 ## 中文说明
 
-DeepSeek Harness Web 用量板：一块可拖动悬浮卡片，按当前 **模型提供方** 和 **订阅中心登录** 自动显示额度。未登录、未配置的提供方不会出现。
+DeepSeek Harness Web 用量板：一块可拖动悬浮卡片，按当前 **已登录的订阅** 和 **已配置密钥的模型提供方** 自动显示额度。订阅中心只是注册了适配器、但还没登录的供应商 **不会出现在用量板上**。
 
 ### 🌟 特性
 
@@ -70,7 +70,7 @@ MIT
 <a name="english"></a>
 ## English
 
-DeepSeek Harness usage overlay: a draggable card that auto-detects **model providers** and **subscription-hub logins**. Unconfigured providers stay hidden.
+DeepSeek Harness usage overlay: a draggable card that auto-detects **signed-in subscriptions** and **key-backed model providers**. Hub adapters that are only registered (not logged in) stay off the board.
 
 ### Highlights
 

@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { collectPiAiProviders, matchWanted, sortProviders, validProviderId, DEFAULT_ORDER } from "../lib/detect.js";
+import { collectPiAiProviders, matchWanted, wantedFromSources, withoutSkipped, sortProviders, validProviderId, DEFAULT_ORDER } from "../lib/detect.js";
 import { collectHubLogins, fromWindows, kindLabel } from "../lib/providers/hub-session.js";
 
 describe("validProviderId", () => {
@@ -49,6 +49,44 @@ describe("matchWanted", () => {
 		assert.equal(wanted.has("openrouter"), true);
 		assert.equal(wanted.has("ernie"), true);
 		assert.equal(wanted.has("claude"), false);
+	});
+});
+
+describe("wantedFromSources", () => {
+	it("does not show hub cards from LLM routes alone (logged-out adapters)", () => {
+		const wanted = wantedFromSources({
+			hubLogins: [],
+			routes: ["antigravity", "codex", "claude", "openrouter", "qwen", "opencode"]
+		});
+		assert.equal(wanted.has("gemini"), false);
+		assert.equal(wanted.has("gpt"), false);
+		assert.equal(wanted.has("claude"), false);
+		assert.equal(wanted.has("openrouter"), false);
+		assert.equal(wanted.has("qwen"), false);
+		assert.equal(wanted.has("opencode"), true);
+	});
+	it("shows hub cards only after a real login, plus key-backed extras", () => {
+		const wanted = wantedFromSources({
+			hubLogins: ["antigravity", "qwen"],
+			routes: ["codex", "opencode"],
+			extraIds: ["deepseek"]
+		});
+		assert.equal(wanted.has("gemini"), true);
+		assert.equal(wanted.has("qwen"), true);
+		assert.equal(wanted.has("gpt"), false);
+		assert.equal(wanted.has("opencode"), true);
+		assert.equal(wanted.has("deepseek"), true);
+	});
+});
+
+describe("withoutSkipped", () => {
+	it("drops unconfigured rows so names do not appear on the board", () => {
+		const rows = withoutSkipped([
+			{ id: "gemini", skipped: false, headline: "12%" },
+			{ id: "qwen", skipped: true, error: "未在订阅中心登录" },
+			{ id: "gpt", skipped: true }
+		]);
+		assert.deepEqual(rows.map((p) => p.id), ["gemini"]);
 	});
 });
 
