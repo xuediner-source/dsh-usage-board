@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { collectPiAiProviders, matchWanted, wantedFromSources, withoutSkipped, sortProviders, validProviderId, DEFAULT_ORDER } from "../lib/detect.js";
+import { collectPiAiProviders, matchWanted, wantedFromSources, withoutSkipped, sortProviders, validProviderId, selectEnabled, parseJsonText, DEFAULT_ORDER } from "../lib/detect.js";
 import { collectHubLogins, fromWindows, kindLabel } from "../lib/providers/hub-session.js";
 
 describe("validProviderId", () => {
@@ -76,6 +76,72 @@ describe("wantedFromSources", () => {
 		assert.equal(wanted.has("gpt"), false);
 		assert.equal(wanted.has("opencode"), true);
 		assert.equal(wanted.has("deepseek"), true);
+	});
+});
+
+describe("selectEnabled", () => {
+	const all = [
+		{ id: "gemini" },
+		{ id: "gpt" },
+		{ id: "grok-sub" },
+		{ id: "xuedinerapi" }
+	];
+
+	it("a non-empty enabled list is a whitelist that replaces auto-detection", () => {
+		const auto = new Set(["gemini", "gpt", "grok-sub"]);
+		const picked = selectEnabled(all, auto, { enabled: ["xuedinerapi"] });
+		assert.deepEqual(picked.map((p) => p.id), ["xuedinerapi"]);
+	});
+
+	it("this is exactly how the hub cards disappeared", () => {
+		// The real regression: config.enabled held only the external provider,
+		// so three signed-in hub cards were filtered out even though the hub
+		// logins were present.
+		const auto = new Set(["gemini", "gpt", "grok-sub"]);
+		const withWhitelist = selectEnabled(all, auto, { enabled: ["xuedinerapi"] });
+		assert.equal(withWhitelist.some((p) => p.id === "gemini"), false);
+		// dropping `enabled` restores them
+		const withoutWhitelist = selectEnabled(all, auto, {});
+		assert.deepEqual(withoutWhitelist.map((p) => p.id), ["gemini", "gpt", "grok-sub"]);
+	});
+
+	it("an absent or empty enabled list falls back to auto-detection", () => {
+		const auto = new Set(["gemini"]);
+		assert.deepEqual(selectEnabled(all, auto, undefined).map((p) => p.id), ["gemini"]);
+		assert.deepEqual(selectEnabled(all, auto, {}).map((p) => p.id), ["gemini"]);
+		assert.deepEqual(selectEnabled(all, auto, { enabled: [] }).map((p) => p.id), ["gemini"]);
+	});
+
+	it("an empty auto set shows nothing rather than everything", () => {
+		assert.deepEqual(selectEnabled(all, new Set(), {}), []);
+	});
+
+	it("ignores non-string whitelist entries", () => {
+		const picked = selectEnabled(all, new Set(), { enabled: [null, 7, "gpt"] });
+		assert.deepEqual(picked.map((p) => p.id), ["gpt"]);
+	});
+});
+
+describe("parseJsonText", () => {
+	it("parses plain JSON", () => {
+		assert.deepEqual(parseJsonText('{"a":1}'), { a: 1 });
+	});
+
+	it("parses JSON written with a UTF-8 BOM", () => {
+		// PowerShell's `Set-Content -Encoding utf8` and Windows editors add this.
+		// Without stripping it, loadConfig() silently returned {} and
+		// externalProviders was dropped.
+		const withBom = "\uFEFF" + '{"externalProviders":["xuedinerapi"]}';
+		assert.deepEqual(parseJsonText(withBom), { externalProviders: ["xuedinerapi"] });
+	});
+
+	it("a BOM'd auth store still yields hub logins", () => {
+		const store = parseJsonText("\uFEFF" + '{"antigravity":{"accessToken":"a"}}');
+		assert.deepEqual(collectHubLogins(store), ["antigravity"]);
+	});
+
+	it("still throws on genuinely malformed text", () => {
+		assert.throws(() => parseJsonText("\uFEFF{not json"));
 	});
 });
 

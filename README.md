@@ -45,14 +45,27 @@ dsh plugin --profile desktop add github:xuediner-source/dsh-usage-board
 
 示例见 `docs/example-provider.js`。
 
-可选配置 `~/.dsh/usage-board/config.json`（填写 `enabled` 后关闭自动检测，只显示 listed id）：
+可选配置 `~/.dsh/usage-board/config.json`：
 
 ```json
 {
-  "enabled": ["gemini", "gpt", "grok-sub", "claude", "opencode", "deepseek"],
+  "externalProviders": ["xuedinerapi"],
   "order": ["gemini", "gpt", "grok-sub", "claude", "opencode", "deepseek"]
 }
 ```
+
+⚠️ `enabled` 是**白名单**：一旦填了非空数组，自动检测会被**完全关闭**，只显示 listed id。只写了外部 provider 而忘了订阅中心的卡片，是很容易踩的坑：
+
+```json
+{
+  "externalProviders": ["xuedinerapi"],
+  "enabled": ["xuedinerapi"]   // ← 订阅中心的 gemini/gpt/grok-sub… 全部不显示
+}
+```
+
+想「外部 provider + 订阅中心都显示」，就**不要写 `enabled`**（留空或删除即可），自动检测会同时纳入订阅中心登录态、LLM 路由和外部 provider。
+
+`config.json` 请存成**无 BOM 的 UTF-8**。Windows 记事本和 PowerShell 的 `Set-Content -Encoding utf8` 会写入 BOM，插件已做兼容处理，但无 BOM 最稳妥。
 
 ### 🧪 测试
 
